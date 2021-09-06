@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<th:block th:fragment="headerFragment(activeTab)">
+<header>
+<!-- 대문 컨테이너 -->
+<div class="jumbotron jumbotron-fluid bg-dark">
+    <div class="container banner" style="color:ivory">
+        <h1 class="lead">&#8220;The best books… <br/>are those that tell you what you know already.&#8221;
+        </h1>
+        <p>– George Orwell</p>
+    </div>
+</div>
+
+<!-- 네비게이션 바 -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="/" th:href="@{/}">My Mall</a>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item" th:classappend="${activeTab == 'login'} ? active" sec:authorize="!isAuthenticated()">
+                <a class="nav-link" th:href="@{/login}">로그인</a>
+            </li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/signup}"
+                                    th:classappend="${activeTab == 'signup'} ? active">회원가입</a></li>
+
+            <li class="nav-item" th:classappend="${activeTab == 'logout'} ? active">
+                <form class="form-inline" th:action="@{/logout}" th:method="post">
+                    <button class="nav-link btn btn-dark" type="submit" sec:authorize="isAuthenticated()">로그아웃</button>
+                </form>
+            </li>
+
+            <li th:if="${member != null}" class="nav-item" th:classappend="${activeTab == 'mypage'} ? active"
+                sec:authorize="isAuthenticated()">
+                <a class="nav-link" th:href="@{'/mypage/' + ${member.email}}" th:text="${member.email}">내 정보</a>
+            </li>
+
+            <li class="nav-item" th:classappend="${activeTab == 'items'} ? active">
+                <a class="nav-link" th:href="@{/}">상품목록</a>
+            </li>
+
+            <li class="nav-item" th:classappend="${activeTab == 'cart'}? active" sec:authorize="isAuthenticated()">
+                <a class="nav-link" th:href="@{/cart/list}"><i class="fas fa-shopping-cart"></i></a>
+            </li>
+
+            <li class="nav-item" th:classappend="${activeTab} == 'like'? active" sec:authorize="isAuthenticated()">
+                <a class="nav-link" th:href="@{/item/like-list}"><i class="fas fa-heart"></i></a>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">Category</a>
+                <div class="dropdown-menu" data-toggle="pill">
+                    <a class="dropdown-item">도서</a>
+                    <a class="dropdown-item">앨범</a>
+                    <a class="dropdown-item">게임</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item">기타</a>
+                </div>
+            </li>
+        </ul>
+
+        <form class="form-inline my-2 my-lg-0" action="#">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+
+</header>
+</th:block>
+
+<th:block th:fragment="footerFragment">
+<footer class="jumbotron jumbotron-fluid text-center bg-dark banner" style="margin-bottom: 0">
+    <p style="color: ghostwhite">&copy;2021. Sera Lee. All Rights Reserved.</p>
+</footer>
+</th:block>
+
+</html>

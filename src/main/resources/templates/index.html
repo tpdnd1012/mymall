@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main-layout}" th:with="activeTab='items', title='My Mall'">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div layout:fragment="content">
+    <h1 th:text="${msg}">이곳은 메인페이지</h1>
+
+    <!-- 로그인 안했을 때 -->
+    <div sec:authorize="!isAuthenticated()">
+        환영합니다. <span th:text="${#authentication?.name}"></span>님,
+        로그인을 해주세요.
+    </div>
+
+    <!-- 로그인 했을 때 -->
+    <div sec:authorize="isAuthenticated()">
+        환영합니다. <span th:text="${#authentication?.name}"></span>님
+
+        <form th:action="@{/logout}" method="post">
+            <button>로그아웃</button>
+        </form>
+    </div>
+
+    <div th:if="${albumList != null}">
+
+        <table>
+
+            <tr>
+                <th>음반명</th>
+                <th>이미지</th>
+                <th>가격</th>
+            </tr>
+
+            <th:block th:each="album : ${albumList}">
+                <tr th:object="${album}">
+
+                    <th th:text="*{name}"></th>
+                    <th><img th:src="*{imageUrl}"></th>
+                    <td th:text="*{price}"></td>
+
+                </tr>
+            </th:block>
+
+        </table>
+
+    </div>
+
+    </div>
+</body>
+</html>

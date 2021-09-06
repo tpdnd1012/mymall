@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main-layout}" th:with="activeTab='mypage', title='My Page'">
+<body>
+<div layout:fragment="content">
+<ul class="list-group list-group-flush" th:object="${member}">
+    <li class="list-group-item" th:text="*{email}"></li>
+    <li class="list-group-item" th:text="*{emailVerified}"></li>
+    <li class="list-group-item" th:text="*{joinedAt}"></li>
+    <li class="list-group-item" th:text="*{id}"></li>
+</ul>
+</div>
+</body>
+</html>
