@@ -1,0 +1,31 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main-layout}" th:with="activeTab='items', title='${item.name}'">
+
+<body>
+<div layout:fragment="content">
+    <div class="card" style="width:200px; height:530px" th:object="${item}">
+        <img class="card-img-top" th:src="*{imageUrl}" alt="Card image">
+        <div class="card-body" style="height: 210px;">
+            <p class="card-text">
+                <span class="lead" th:text="*{#numbers.formatInteger(price, 3,'COMMA')}"></span>
+                원
+            </p>
+            <p th:if="*{stackQuantity == 0}">
+                <span class="badge badge-pill badge-danger">품절</span>
+            </p>
+            <p class="card-text" th:if="*{stackQuantity == 0}">
+                <span class="lead" th:text="*{stackQuantity}"></span>
+                개 남음
+            </p>
+            <p class="card-title h4" th:text="*{name}"></p>
+
+
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

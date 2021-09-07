@@ -3,6 +3,7 @@ package com.megait.mymall.service;
 import com.megait.mymall.domain.Album;
 import com.megait.mymall.domain.Book;
 import com.megait.mymall.domain.Category;
+import com.megait.mymall.domain.Item;
 import com.megait.mymall.repository.AlbumRepository;
 import com.megait.mymall.repository.BookRepository;
 import com.megait.mymall.repository.CategoryRepository;
@@ -106,6 +107,12 @@ public class ItemService {
     public List<Album> getAlbumList() {
 
         return albumRepository.findAll();
+
+    }
+
+    public Item findItem(Long id) {
+
+        return itemRepository.findById(id).orElseThrow();
 
     }
 

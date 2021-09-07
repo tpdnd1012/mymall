@@ -9,7 +9,7 @@
     <title>Title</title>
 </head>
 <body>
-    <div layout:fragment="content">
+<div layout:fragment="content">
     <h1 th:text="${msg}">이곳은 메인페이지</h1>
 
     <!-- 로그인 안했을 때 -->
@@ -27,30 +27,19 @@
         </form>
     </div>
 
-    <div th:if="${albumList != null}">
-
-        <table>
-
-            <tr>
-                <th>음반명</th>
-                <th>이미지</th>
-                <th>가격</th>
-            </tr>
-
-            <th:block th:each="album : ${albumList}">
-                <tr th:object="${album}">
-
-                    <th th:text="*{name}"></th>
-                    <th><img th:src="*{imageUrl}"></th>
-                    <td th:text="*{price}"></td>
-
-                </tr>
-            </th:block>
-
-        </table>
-
+    <div class="py-5 ml-2">
+        <h2>이달의 추천 도서</h2>
+        <p class="lead">현재 핫한 도서 리스트!</p>
     </div>
-
+    <th:block th:insert="layout/fragments :: itemListFragment(${bookList})"/>
+    <hr class="col-12 my-4">
+    <div class="py-5 ml-2">
+        <h2>이달의 추천 앨범</h2>
+        <p class="lead">현재 핫한 음반 리스트!</p>
     </div>
+    <th:block th:insert="layout/fragments :: itemListFragment(${bookList})"/>
+
+
+</div>
 </body>
 </html>
