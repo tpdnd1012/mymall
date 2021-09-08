@@ -1,13 +1,7 @@
 package com.megait.mymall.service;
 
-import com.megait.mymall.domain.Album;
-import com.megait.mymall.domain.Book;
-import com.megait.mymall.domain.Category;
-import com.megait.mymall.domain.Item;
-import com.megait.mymall.repository.AlbumRepository;
-import com.megait.mymall.repository.BookRepository;
-import com.megait.mymall.repository.CategoryRepository;
-import com.megait.mymall.repository.ItemRepository;
+import com.megait.mymall.domain.*;
+import com.megait.mymall.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -19,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +25,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
     private final CategoryService categoryService;
+    private final MemberRepository memberRepository;
 
     @PostConstruct
     public void createItems() throws IOException{
@@ -114,6 +110,33 @@ public class ItemService {
 
         return itemRepository.findById(id).orElseThrow();
 
+    }
+
+    @Transactional
+    public FlagLike addLike(Member member, Long id) {
+        Item item;
+
+        if(member == null){
+            return FlagLike.ERROR_AUTH;
+        }
+
+        member = memberRepository.findById(member.getId()).orElseThrow();
+        try {
+            item = findItem(id);
+        } catch (NoSuchElementException e){
+            return FlagLike.ERROR_INVALID;
+        }
+
+        if(member.getLikes().contains(item)){
+            return FlagLike.ERROR_DUPLICATE;
+        }
+
+        member.getLikes().add(item);
+        return FlagLike.OK;
+    }
+
+    public enum FlagLike {
+        ERROR_AUTH, ERROR_INVALID, ERROR_DUPLICATE, OK
     }
 
 }

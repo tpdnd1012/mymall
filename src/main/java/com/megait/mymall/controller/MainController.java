@@ -1,5 +1,6 @@
 package com.megait.mymall.controller;
 
+import com.google.gson.JsonObject;
 import com.megait.mymall.domain.Album;
 import com.megait.mymall.domain.Book;
 import com.megait.mymall.domain.Item;
@@ -157,6 +158,58 @@ public class MainController {
 
         return "/item/detail";
 
+    }
+
+    @GetMapping("/item/like/{id}")
+    @ResponseBody  // 리턴값을 뷰이름으로 인식하지 말고(포워드 하지 말라!),
+    // 리턴값 자체를 response body에 넣어서 응답하라!
+    public String itemLike(@PathVariable Long id,
+                           @CurrentMember Member member,
+                           Model model) {
+        String resultCode = "";
+        String message = "";
+
+        // 현재 인증된 사용자의 likes에 해당 상품을 추가한다.
+        // 예외상황
+        //   - 로그인을 안했을 때.
+        //      (resultCode: "error.auth"  message: "로그인이 필요한 서비스입니다.")
+        //   - 미등록 상품일 때.
+        //      (resultCode: "error.invalid"  message: "잘못된 상품 번호입니다.")
+        //   - 이미 찜한 상품일 때.
+        //      (resultCode: "error.duplicate"  message: "이미 찜한 상품입니다.")
+        switch (itemService.addLike(member, id)){
+
+            case ERROR_AUTH:
+                resultCode = "error.auth";
+                message = "로그인이 필요한 서비스입니다.";
+                break;
+
+            case ERROR_INVALID:
+                resultCode = "error.invalid";
+                message = "잘못된 상품 번호입니다.";
+                break;
+
+            case ERROR_DUPLICATE:
+                resultCode = "error.duplicate";
+                message = "이미 찜한 상품입니다.";
+                break;
+
+            case OK:
+                resultCode = "ok";
+                message = "찜목록에 추가하였습니다.";
+                break;
+
+        }
+
+        // 응답해줄 JSON 객체 생성 및 설정
+        JsonObject jsonObject = new JsonObject();
+
+        jsonObject.addProperty("resultCode", resultCode);
+        jsonObject.addProperty("message", message);
+        log.info("jsonObject.toString() : {}", jsonObject.toString());
+
+        // JSON 객체를 String 형태로 리턴.
+        return jsonObject.toString();
     }
 
 }
