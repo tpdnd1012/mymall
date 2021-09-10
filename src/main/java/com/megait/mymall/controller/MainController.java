@@ -212,4 +212,15 @@ public class MainController {
         return jsonObject.toString();
     }
 
+    @GetMapping("/item/like-list")
+    public String likeList(@CurrentMember Member member, Model model) {
+
+        List<Item> list = itemService.getLikeList(member);
+
+        model.addAttribute("likeList", list);
+
+        return "item/like";
+
+    }
+
 }

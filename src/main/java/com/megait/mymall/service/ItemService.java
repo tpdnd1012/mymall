@@ -114,6 +114,7 @@ public class ItemService {
 
     @Transactional
     public FlagLike addLike(Member member, Long id) {
+
         Item item;
 
         if(member == null){
@@ -137,6 +138,14 @@ public class ItemService {
 
     public enum FlagLike {
         ERROR_AUTH, ERROR_INVALID, ERROR_DUPLICATE, OK
+    }
+
+    public List<Item> getLikeList(Member member) {
+
+        member = memberRepository.findByEmail(member.getEmail()).orElseThrow();
+
+        return member.getLikes();
+
     }
 
 }
