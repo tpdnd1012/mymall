@@ -212,6 +212,7 @@ public class MainController {
         return jsonObject.toString();
     }
 
+    // 찜한 목록 보기
     @GetMapping("/item/like-list")
     public String likeList(@CurrentMember Member member, Model model) {
 
@@ -220,6 +221,26 @@ public class MainController {
         model.addAttribute("likeList", list);
 
         return "item/like";
+
+    }
+
+    // 장바구니 담기
+    @PostMapping("/cart/list")
+    @Transactional
+    public String addCart(@RequestParam("item_id") Long[] itemId, @CurrentMember Member member, Model model) {
+
+        // 장바구니에 들어갈 상품 번호 : 찜한 목록 번호
+
+        // 찜한 목록 번호 --> Item 엔티티들 조회해온다.
+
+        // 로그인한 유저의 Cart리스트에 상품 저장
+        itemService.addAllToCart(member, itemId);
+
+        // 로그인한 유저의 Like 리스트에 상품 삭제
+        itemService.removeAllFromLikes(member, itemId);
+
+        // 찜목록 보기 실행
+        return likeList(member, model);
 
     }
 

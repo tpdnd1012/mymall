@@ -6,14 +6,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -145,6 +145,41 @@ public class ItemService {
         member = memberRepository.findByEmail(member.getEmail()).orElseThrow();
 
         return member.getLikes();
+
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void addAllToCart(Member member, Long[] itemId) {
+
+        log.info("itemId : {}",  Arrays.toString(itemId));
+
+        member = memberRepository.findById(member.getId()).orElseThrow();
+
+        List<Item> itemList = itemRepository.findAllById(List.of(itemId));
+
+        Set<Item> itemSet = new HashSet<>(member.getCart());
+
+        itemList.forEach(e -> {
+            itemSet.add(e);
+        });
+
+        member.setCart(new ArrayList<>(itemSet));
+
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void removeAllFromLikes(Member member, Long[] itemId) {
+
+        //final Member aMember = memberRepository.findById(member.getId()).orElseThrow();
+        member = memberRepository.findById(member.getId()).orElseThrow();
+
+        List<Item> itemList = itemRepository.findAllById(List.of(itemId));
+
+        /*itemList.forEach(e -> {
+            aMember.getLikes().remove(e);
+        });*/
+
+        member.getLikes().removeAll(itemList);
 
     }
 
